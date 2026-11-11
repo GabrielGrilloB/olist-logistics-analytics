@@ -8,7 +8,7 @@ Identificar segmentos que devem ser priorizados em uma investigação operaciona
 
 ## Status
 
-Estrutura inicial criada. A análise, o pipeline completo, o dashboard e a implantação AWS são etapas futuras. Os dados da Olist são históricos e as cargas incrementais serão demonstradas por simulação documentada.
+Auditoria dos nove CSVs e primeira tabela analítica por pedido concluídas e validadas. O dashboard, a análise aprofundada e a implantação AWS são etapas futuras. Os dados da Olist são históricos e as cargas incrementais serão demonstradas por simulação documentada.
 
 ## Tecnologias
 
@@ -52,12 +52,24 @@ Fonte original de Olist e colaboradores, Brazilian E-Commerce Public Dataset by 
 
 ## Próximas entregas
 
-1. Auditar chaves, datas, status e avaliações.
-2. Definir a granularidade e os denominadores dos indicadores.
-3. Construir a tabela analítica de pedidos em SQL.
-4. Reconciliar indicadores no Excel e no Power BI.
-5. Demonstrar carga incremental, reprocessamento e recuperação de falhas.
-6. Documentar os resultados e, se elegível, executar a demonstração AWS gratuita.
+1. Reconciliar indicadores no Excel e no Power BI.
+2. Investigar atrasos por mês e UF e cobertura das avaliações.
+3. Demonstrar cargas incrementais mensais.
+4. Documentar os resultados e, se elegível, executar a demonstração AWS gratuita.
+
+## Executar auditoria e construir a tabela
+
+```powershell
+conda activate portfolio-dados
+python src/build_analytics.py
+python -m pytest tests -q
+```
+
+O script executa `sql/build_orders.sql` no DuckDB. O relatório público está em [docs/data_audit.md](docs/data_audit.md) e as regras em [docs/metric_rules.md](docs/metric_rules.md).
+
+`data/processed/current.json` informa a versão local ativa. Dentro dela ficam `olist.duckdb` (fontes, `analytics_orders` e `reconciliation`), `orders.parquet`, `reconciliation.csv`, `audit.json` e `audit.md`. Os arquivos de dados ficam fora do GitHub.
+
+Primeiro resultado histórico com as regras documentadas: 99.441 pedidos preservados, 96.470 elegíveis e 6.534 atrasados, ou 6,77% dos elegíveis. A data prometida é interpretada como um dia de calendário.
 
 ## Custo
 
